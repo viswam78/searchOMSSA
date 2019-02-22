@@ -1,9 +1,6 @@
 #########################
 # Github repo for README on this: https://github.com/viswam78/OMSSA_Searches
 ########################
-
-# Import modules
-
 import os
 import sys
 import pandas as pd
@@ -11,8 +8,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import argparse
 
-# Input: omssacsv files, fdr range
-# Results in ROC curve
+# Input: omssacsv files
+# Ouputs ROC curves for Input files
 
 
 def main():
@@ -31,13 +28,13 @@ def main():
     omssacsv_nonref = args[2]
 
     # Pass the omssa output files as arguments
-    # omssacsv_nonref = r'C:\Bitbucket_repos\NCBI_OMSSA\Output\Run1.csv'
-    # omssacsv_ref = r'C:\Bitbucket_repos\NCBI_OMSSA\Output\Run2.csv'
+    # omssacsv_nonref = r'C:\Bitbucket_repos\NCBI_OMSSA\Output\<From OMSSA search>.csv'
+    # omssacsv_ref = r'C:\Bitbucket_repos\NCBI_OMSSA\Output\<From OMSSA search>.csv'
 
     ref_nonref = [omssacsv_ref, omssacsv_nonref]
 
     for omssacsvFiles in ref_nonref:
-        
+
         omssacsv_name = os.path.join(omssacsvFiles)
 
         updatePSMs = add_reverse_info(omssacsv_name)
@@ -56,7 +53,7 @@ def add_reverse_info(csv_df):
     df_sorted = df.sort_values(by=[' E-value'])
     df_sorted['IsReverse'] = df_sorted[' Defline'].str.match('###REV###')
     # Turn IsReverse to 1 (from google!)
-    df_sorted['IsReverseValue'] =  df_sorted['IsReverse'] * 1
+    df_sorted['IsReverseValue'] = df_sorted['IsReverse'] * 1
     df_sorted['false-hits'] = np.cumsum(df_sorted['IsReverseValue'])
     df_sorted['rev_labels'] = -1 * df_sorted['IsReverseValue'] + 1
     df_sorted['true-hits'] = np.cumsum(df_sorted['rev_labels'])
@@ -72,10 +69,9 @@ def plot_roc_curve(df, filenameFDR):
     plt.ylabel('True Positives')
     plt.xlabel('False positives')
     # plt.show()
-    fig.savefig(os.path.join('../Output_pngs', os.path.basename(filenameFDR) + '_ROC.png'), dpi=fig.dpi)
+    fig.savefig(os.path.join('../Output_pngs',
+                             os.path.basename(filenameFDR) + '_ROC.png'), dpi=fig.dpi)
     return 0
 
-# Execute the main function
 if __name__ == "__main__":
     main()
-
