@@ -1,0 +1,6 @@
+*.raw
+Input
+**\*.pl
+blastDb
+Scripts\decoy.pl
+.vscode
